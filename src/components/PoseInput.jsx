@@ -2,72 +2,74 @@ import React, { useState } from 'react';
 
 function PoseInput({ onSubmit }) {
   const [input, setInput] = useState('');
-  const [loading, setLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    if (!input.trim()) return;
-
-    setLoading(true);
-    
-    // Simulate API call (later: connect to Python backend)
-    setTimeout(() => {
-      onSubmit(input);
-      setInput('');
-      setLoading(false);
-    }, 500);
-  };
-
-  const suggestedPoses = [
-    'sedí se zkříženýma nohama',
-    'ruce nahoru',
-    'běh',
-    'tleskání',
-    'skákání',
-    'leží na zemi',
-    'krčí se',
+  const suggestions = [
+    '🧘 Meditace se skříženýma nohama',
+    '🏃 Běh vpřed',
+    '🙌 Ruce vzhůru',
+    '👏 Tleskání',
+    '🪑 Sezení na židli',
+    '💪 Flexing',
   ];
 
-  const handleSuggestedPose = (pose) => {
-    setInput(pose);
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (input.trim()) {
+      setIsLoading(true);
+      setTimeout(() => {
+        onSubmit(input);
+        setInput('');
+        setIsLoading(false);
+      }, 500);
+    }
+  };
+
+  const handleSuggestion = (suggestion) => {
+    setInput(suggestion);
   };
 
   return (
-    <div className="pose-input">
-      <form onSubmit={handleSubmit}>
-        <div className="input-group">
-          <textarea
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
-            placeholder="Napiš popis pozice... např. 'sedí se zkříženýma nohama'"
-            rows="4"
-            disabled={loading}
-          />
-          <button 
-            type="submit" 
-            disabled={!input.trim() || loading}
-            className="submit-btn"
-          >
-            {loading ? '⏳ Zpracovávám...' : '✨ Vytvořit Poza'}
-          </button>
-        </div>
-      </form>
+    <form className="pose-input" onSubmit={handleSubmit}>
+      <div className="input-group">
+        <label htmlFor="pose-description">
+          📝 Popis pozice:
+        </label>
+        <textarea
+          id="pose-description"
+          value={input}
+          onChange={(e) => setInput(e.target.value)}
+          placeholder="Napiš jak má postava stát, sedět, nebo co dělat... (např. 'stoj na jedné noze')\n\n💡 Buď konkrétní!"
+          rows="4"
+          disabled={isLoading}
+        />
+      </div>
 
       <div className="suggestions">
-        <p>💡 Namětů pozic:</p>
+        <p>💡 Inspirace:</p>
         <div className="suggestion-buttons">
-          {suggestedPoses.map((pose, index) => (
+          {suggestions.map((suggestion, idx) => (
             <button
-              key={index}
+              key={idx}
+              type="button"
               className="suggestion-btn"
-              onClick={() => handleSuggestedPose(pose)}
+              onClick={() => handleSuggestion(suggestion)}
+              disabled={isLoading}
             >
-              {pose}
+              {suggestion}
             </button>
           ))}
         </div>
       </div>
-    </div>
+
+      <button
+        type="submit"
+        className="submit-btn"
+        disabled={!input.trim() || isLoading}
+      >
+        {isLoading ? '⏳ Generujem...' : '🚀 Vygeneruj pozu'}
+      </button>
+    </form>
   );
 }
 
