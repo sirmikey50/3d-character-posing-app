@@ -1,0 +1,5 @@
+{
+  "name": "3d-character-posing-app",
+  "buildCommand": "npm run build",
+  "outputDirectory": "build"
+}
